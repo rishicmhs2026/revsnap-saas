@@ -1,27 +1,60 @@
 {
-  "name": "pricing-optimizer",
-  "version": "0.1.0",
+  "name": "profitpulse-saas",
+  "version": "1.0.0",
+  "description": "B2B SaaS platform for pricing optimization and profit maximization",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "deploy": "npm run build && npm run start"
   },
   "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.4.4"
+    "@headlessui/react": "^1.7.18",
+    "@heroicons/react": "^2.1.1",
+    "@stripe/stripe-js": "^2.4.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.344.0",
+    "next": "15.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "recharts": "^2.12.0",
+    "stripe": "^14.17.0",
+    "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3.0.2",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.4",
-    "@eslint/eslintrc": "^3"
-  }
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "saas",
+    "pricing",
+    "optimization",
+    "b2b",
+    "analytics",
+    "profit",
+    "business",
+    "nextjs",
+    "typescript"
+  ],
+  "author": "ProfitPulse Team",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/profitpulse/saas-platform"
+  },
+  "homepage": "https://profitpulse.com"
 }
