@@ -116,7 +116,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -215,10 +215,10 @@ export default function DashboardPage() {
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-900">Products</h3>
-              <button
-                onClick={() => setShowAddProduct(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 flex items-center"
-              >
+                              <button
+                  onClick={() => setShowAddProduct(true)}
+                  className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 flex items-center transition-all duration-200 transform hover:scale-105 shadow-sm"
+                >
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add Product
               </button>

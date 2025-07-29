@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -21,7 +21,7 @@ export default function Home() {
                 <Link href="#pricing" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
                   Pricing
                 </Link>
-                <Link href="/demo" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+                <Link href="/demo" className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors duration-200 shadow-sm">
                   Try Demo
                 </Link>
               </div>
@@ -36,7 +36,7 @@ export default function Home() {
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Optimize Your Revenue,
-              <span className="text-blue-600"> Maximize Your Profits</span>
+              <span className="text-primary-600"> Maximize Your Profits</span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
               Data-driven revenue optimization platform for small businesses. 
@@ -45,7 +45,7 @@ export default function Home() {
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
                 href="/demo"
-                className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                className="rounded-md bg-primary-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all duration-200 transform hover:scale-105"
               >
                 Start Free Trial
               </Link>
@@ -122,10 +122,10 @@ export default function Home() {
           </div>
           <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-y-6 sm:mt-20 sm:max-w-none sm:grid-cols-3">
             {/* Starter Plan */}
-            <div className="flex flex-col justify-between rounded-3xl bg-white p-8 ring-1 ring-gray-200 xl:p-10">
+            <div className="flex flex-col justify-between rounded-3xl bg-white p-8 ring-1 ring-gray-200 xl:p-10 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
               <div className="flex items-center justify-between gap-x-4">
                 <h3 className="text-lg font-semibold leading-8 text-gray-900">Starter</h3>
-                <p className="rounded-full bg-gray-900/5 px-2.5 py-1 text-xs font-semibold leading-5 text-gray-900">
+                <p className="rounded-full bg-primary-100 px-2.5 py-1 text-xs font-semibold leading-5 text-primary-800">
                   Most popular
                 </p>
               </div>
