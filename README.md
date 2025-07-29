@@ -1,10 +1,10 @@
-# ProfitPulse - B2B Pricing Optimization Platform
+# RevSnap - B2B Revenue Optimization Platform
 
-A comprehensive SaaS platform that helps small businesses optimize their pricing strategies to maximize profits. Built with Next.js, TypeScript, and Tailwind CSS.
+A comprehensive SaaS platform that helps small businesses optimize their revenue strategies to maximize profits. Built with Next.js, TypeScript, and Tailwind CSS.
 
 ## 🚀 Business Overview
 
-**ProfitPulse** is a B2B SaaS solution designed to help small businesses increase their profit margins by 15-40% through data-driven pricing optimization. The platform combines advanced analytics, competitor intelligence, and AI-powered recommendations to deliver actionable pricing insights.
+**RevSnap** is a B2B SaaS solution designed to help small businesses increase their profit margins by 15-40% through data-driven revenue optimization. The platform combines advanced analytics, competitor intelligence, and AI-powered recommendations to deliver actionable revenue insights.
 
 ### Target Market
 - Small to medium-sized businesses (SMBs)
@@ -257,9 +257,9 @@ This project is proprietary software. All rights reserved.
 ## 📞 Support
 
 For business inquiries or technical support:
-- Email: support@profitpulse.com
-- Website: https://profitpulse.com
-- Documentation: https://docs.profitpulse.com
+- Email: support@revsnap.com
+- Website: https://revsnap.com
+- Documentation: https://docs.revsnap.com
 
 ---
 

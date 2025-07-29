@@ -1,8 +1,8 @@
-# ProfitPulse Business Plan
+# RevSnap Business Plan
 
 ## Executive Summary
 
-**ProfitPulse** is a B2B SaaS platform that helps small businesses optimize their pricing strategies to increase profit margins by 15-40%. Our target is to achieve $15,000 in monthly recurring revenue (MRR) by the end of this month through a combination of direct sales, content marketing, and strategic partnerships.
+**RevSnap** is a B2B SaaS platform that helps small businesses optimize their revenue strategies to increase profit margins by 15-40%. Our target is to achieve $15,000 in monthly recurring revenue (MRR) by the end of this month through a combination of direct sales, content marketing, and strategic partnerships.
 
 ### Problem Statement
 Small businesses struggle with pricing optimization due to:
@@ -276,4 +276,4 @@ ProfitPulse provides an intuitive platform that combines:
 
 ---
 
-**ProfitPulse: Empowering small businesses to maximize profits through intelligent pricing optimization.** 
+**RevSnap: Empowering small businesses to maximize profits through intelligent revenue optimization.** 

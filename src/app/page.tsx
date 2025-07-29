@@ -10,7 +10,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-blue-600">ProfitPulse</h1>
+                <h1 className="text-2xl font-bold text-blue-600">RevSnap</h1>
               </div>
             </div>
             <div className="hidden md:block">
@@ -35,11 +35,11 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Optimize Your Pricing,
+              Optimize Your Revenue,
               <span className="text-blue-600"> Maximize Your Profits</span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Data-driven pricing optimization platform for small businesses. 
+              Data-driven revenue optimization platform for small businesses. 
               Increase your profit margins by 15-40% with our advanced analytics and competitive insights.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -254,7 +254,7 @@ export default function Home() {
         <div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Ready to optimize your pricing strategy?
+              Ready to optimize your revenue strategy?
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-blue-200">
               Join hundreds of businesses that have increased their profit margins by 15-40% using our platform.
@@ -287,7 +287,7 @@ export default function Home() {
           </div>
           <div className="mt-8 md:order-1 md:mt-0">
             <p className="text-center text-xs leading-5 text-gray-400">
-              &copy; 2024 ProfitPulse. All rights reserved.
+              &copy; 2024 RevSnap. All rights reserved.
             </p>
           </div>
         </div>

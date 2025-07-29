@@ -1,4 +1,4 @@
-# ProfitPulse Deployment Guide
+# RevSnap Deployment Guide
 
 ## Quick Start (5 minutes)
 

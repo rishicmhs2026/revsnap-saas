@@ -1,7 +1,7 @@
 {
-  "name": "profitpulse-saas",
+  "name": "revsnap-saas",
   "version": "1.0.0",
-  "description": "B2B SaaS platform for pricing optimization and profit maximization",
+  "description": "B2B SaaS platform for revenue optimization and profit maximization",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -50,11 +50,11 @@
     "nextjs",
     "typescript"
   ],
-  "author": "ProfitPulse Team",
+  "author": "RevSnap Team",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "https://github.com/profitpulse/saas-platform"
+    "url": "https://github.com/revsnap/saas-platform"
   },
-  "homepage": "https://profitpulse.com"
+  "homepage": "https://revsnap.com"
 }

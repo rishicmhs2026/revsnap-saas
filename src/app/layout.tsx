@@ -5,9 +5,9 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ProfitPulse - B2B Pricing Optimization Platform',
-  description: 'Optimize your business pricing strategy to maximize profits. Advanced analytics and competitive insights for small businesses.',
-  keywords: 'pricing optimization, B2B SaaS, profit maximization, business analytics, competitive pricing',
+  title: 'RevSnap - B2B Revenue Optimization Platform',
+  description: 'Optimize your business revenue strategy to maximize profits. Advanced analytics and competitive insights for small businesses.',
+  keywords: 'revenue optimization, B2B SaaS, profit maximization, business analytics, competitive pricing',
 }
 
 export default function RootLayout({
