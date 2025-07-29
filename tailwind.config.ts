@@ -9,37 +9,34 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Customize your brand colors here
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6', // Main brand color
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-        },
-        secondary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e', // Secondary brand color
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
+        // Apple-style colors
+        apple: {
+          black: '#0a0a0a',
+          white: '#ffffff',
+          gray: {
+            100: '#f5f5f7',
+            200: '#e5e5e7',
+            300: '#d2d2d7',
+            400: '#a1a1a6',
+            500: '#86868b',
+            600: '#6e6e73',
+            700: '#424245',
+            800: '#1d1d1f',
+            900: '#0a0a0a',
+          }
         },
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'ui-sans', 'system-ui', 'sans-serif'],
+        playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
+        heading: ['var(--font-playfair)', 'Georgia', 'serif'],
+        display: ['var(--font-playfair)', 'Georgia', 'serif'],
+      },
+      backgroundImage: {
+        'spotlight': 'radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%)',
+        'cinematic': 'radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 0%, transparent 60%)',
       },
     },
   },
