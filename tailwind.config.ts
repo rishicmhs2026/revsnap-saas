@@ -30,9 +30,10 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'ui-sans', 'system-ui', 'sans-serif'],
-        playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
-        heading: ['var(--font-playfair)', 'Georgia', 'serif'],
-        display: ['var(--font-playfair)', 'Georgia', 'serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
+        playfair: ['Playfair Display', 'Georgia', 'serif'],
+        heading: ['Playfair Display', 'Georgia', 'serif'],
+        display: ['Playfair Display', 'Georgia', 'serif'],
       },
       backgroundImage: {
         'spotlight': 'radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%)',

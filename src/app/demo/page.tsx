@@ -92,17 +92,17 @@ export default function DemoPage() {
   }))
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{backgroundColor: '#111827', minHeight: '100vh'}}>
       {/* Header */}
-      <div className="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="backdrop-blur-md shadow-sm border-b border-gray-700 sticky top-0" style={{backgroundColor: 'rgba(31, 41, 55, 0.8)'}}>
+        <div className="max-w-4xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary-600">RevSnap Demo</h1>
+              <h1 className="text-3xl font-bold text-white" style={{fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.875rem', letterSpacing: '0.1em', color: 'white'}}>RevSnap Demo</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">Demo Mode</span>
-                              <button className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors duration-200 shadow-sm">
+              <span className="text-sm text-gray-300">Demo Mode</span>
+              <button className="bg-white text-gray-900 px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition-all duration-200">
                 Start Free Trial
               </button>
             </div>
@@ -110,86 +110,92 @@ export default function DemoPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Pricing Calculator */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
               <div className="flex items-center mb-6">
-                <CalculatorIcon className="h-6 w-6 text-blue-600 mr-2" />
-                <h2 className="text-xl font-semibold text-gray-900">Pricing Calculator</h2>
+                <span className="text-white text-2xl mr-2">🧮</span>
+                <h2 className="text-xl font-semibold text-white" style={{fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.25rem', letterSpacing: '0.1em', color: 'white'}}>Pricing Calculator</h2>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>
                     Product Name
                   </label>
                   <input
                     type="text"
                     value={formData.productName}
                     onChange={(e) => setFormData(prev => ({ ...prev, productName: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{backgroundColor: '#374151', color: 'white'}}
                     placeholder="Enter product name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>
                     Current Price ($)
                   </label>
                   <input
                     type="number"
                     value={formData.currentPrice}
                     onChange={(e) => handleInputChange('currentPrice', parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{backgroundColor: '#374151', color: 'white'}}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>
                     Cost per Unit ($)
                   </label>
                   <input
                     type="number"
                     value={formData.cost}
                     onChange={(e) => handleInputChange('cost', parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{backgroundColor: '#374151', color: 'white'}}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>
                     Monthly Demand
                   </label>
                   <input
                     type="number"
                     value={formData.demand}
                     onChange={(e) => handleInputChange('demand', parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{backgroundColor: '#374151', color: 'white'}}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>
                     Competitor Price ($)
                   </label>
                   <input
                     type="number"
                     value={formData.competitorPrice}
                     onChange={(e) => handleInputChange('competitorPrice', parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{backgroundColor: '#374151', color: 'white'}}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-1" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>
                     Industry
                   </label>
                   <select
                     value={formData.industry}
                     onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{backgroundColor: '#374151', color: 'white'}}
                   >
                     <option value="retail">Retail</option>
                     <option value="manufacturing">Manufacturing</option>
@@ -205,42 +211,42 @@ export default function DemoPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg shadow-sm border p-4">
+              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-4">
                 <div className="flex items-center">
-                  <CurrencyDollarIcon className="h-8 w-8 text-green-600" />
+                  <span className="text-white text-2xl mr-3">💰</span>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">Suggested Price</p>
-                    <p className="text-2xl font-bold text-gray-900">${pricingData.suggestedPrice}</p>
+                    <p className="text-sm font-medium text-gray-300" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>Suggested Price</p>
+                    <p className="text-2xl font-bold text-white" style={{fontSize: '1.5rem', color: 'white'}}>${pricingData.suggestedPrice}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm border p-4">
+              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-4">
                 <div className="flex items-center">
-                  <ArrowTrendingUpIcon className="h-8 w-8 text-blue-600" />
+                  <span className="text-white text-2xl mr-3">📈</span>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">Profit Margin</p>
-                    <p className="text-2xl font-bold text-gray-900">{pricingData.profitMargin}%</p>
+                    <p className="text-sm font-medium text-gray-300" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>Profit Margin</p>
+                    <p className="text-2xl font-bold text-white" style={{fontSize: '1.5rem', color: 'white'}}>{pricingData.profitMargin}%</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm border p-4">
+              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-4">
                 <div className="flex items-center">
-                  <ChartBarIcon className="h-8 w-8 text-purple-600" />
+                  <span className="text-white text-2xl mr-3">📊</span>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">Monthly Revenue</p>
-                    <p className="text-2xl font-bold text-gray-900">${pricingData.revenue.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-gray-300" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>Monthly Revenue</p>
+                    <p className="text-2xl font-bold text-white" style={{fontSize: '1.5rem', color: 'white'}}>${pricingData.revenue.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm border p-4">
+              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-4">
                 <div className="flex items-center">
-                  <InformationCircleIcon className="h-8 w-8 text-orange-600" />
+                  <span className="text-white text-2xl mr-3">💡</span>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-500">Monthly Profit</p>
-                    <p className="text-2xl font-bold text-gray-900">${pricingData.profit.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-gray-300" style={{fontSize: '1rem', letterSpacing: '0.05em', color: '#d1d5db'}}>Monthly Profit</p>
+                    <p className="text-2xl font-bold text-white" style={{fontSize: '1.5rem', color: 'white'}}>${pricingData.profit.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -249,8 +255,8 @@ export default function DemoPage() {
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Profit Comparison */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Profit Comparison</h3>
+              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
+                <h3 className="text-lg font-semibold text-white mb-4" style={{fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.125rem', letterSpacing: '0.1em', color: 'white'}}>Profit Comparison</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={profitData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -263,8 +269,8 @@ export default function DemoPage() {
               </div>
 
               {/* Price Breakdown */}
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Price Breakdown</h3>
+              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
+                <h3 className="text-lg font-semibold text-white mb-4" style={{fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.125rem', letterSpacing: '0.1em', color: 'white'}}>Price Breakdown</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -288,8 +294,8 @@ export default function DemoPage() {
             </div>
 
             {/* Demand Forecast */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Demand Forecast</h3>
+            <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-white mb-4" style={{fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.125rem', letterSpacing: '0.1em', color: 'white'}}>Demand Forecast</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={demandData}>
                   <CartesianGrid strokeDasharray="3 3" />

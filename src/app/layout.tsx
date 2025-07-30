@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
+import { Providers } from './providers'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -11,7 +12,6 @@ const inter = Inter({
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800', '900'],
-  variable: '--font-playfair',
   display: 'swap',
 })
 
@@ -28,11 +28,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable} font-playfair`}>
-        <div className="min-h-screen gradient-bg">
-          {children}
-          <Analytics />
-        </div>
+      <body className={`${inter.variable} ${playfair.className}`}>
+        <Providers>
+          <div className="min-h-screen gradient-bg">
+            {children}
+            <Analytics />
+          </div>
+        </Providers>
       </body>
     </html>
   )
