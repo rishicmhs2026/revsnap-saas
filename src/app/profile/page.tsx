@@ -15,7 +15,7 @@ interface UserProfile {
 }
 
 export default function Profile() {
-  const { data: session, status } = useSession()
+  const { status } = useSession() // session removed as unused
   const router = useRouter()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [isEditing, setIsEditing] = useState(false)

@@ -1,9 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ROIDashboard from '@/components/ROIDashboard'
+import WorkflowHabits from '@/components/WorkflowHabits'
+import ShopifyIntegration from '@/components/ShopifyIntegration'
+import ZapierIntegration from '@/components/ZapierIntegration'
+import EnterpriseFeaturesDashboard from '@/components/EnterpriseFeaturesDashboard'
+import NotificationSystem from '@/components/NotificationSystem'
+import FeatureGate, { EnterpriseFeatureGate, ProfessionalFeatureGate, StarterFeatureGate } from '@/components/FeatureGate'
 
 interface Product {
   id: string
@@ -29,23 +36,33 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
-  const [analytics, setAnalytics] = useState<Analytics | null>(null)
+  const [, setAnalytics] = useState<Analytics | null>(null)
   const [organizations, setOrganizations] = useState<any[]>([])
   const [selectedOrg, setSelectedOrg] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
+  const [userPlan, setUserPlan] = useState<string>('free') // Track user's subscription plan
 
-  useEffect(() => {
-    if (status === 'loading') return
-
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin')
-      return
+  // Helper function to get product limits based on plan
+  const getProductLimit = (plan: string): number => {
+    switch (plan) {
+      case 'starter': return 25
+      case 'professional': return 200
+      case 'enterprise': return Infinity
+      case 'free':
+      default: return 2
     }
+  }
 
-    loadDashboardData()
-  }, [status, selectedOrg])
+  // Helper function to display product count with limit
+  const getProductLimitDisplay = (): string => {
+    const limit = getProductLimit(userPlan)
+    if (limit === Infinity) {
+      return ` (${products.length})`
+    }
+    return ` (${products.length}/${limit})`
+  }
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       setIsLoading(true)
 
@@ -73,11 +90,89 @@ export default function Dashboard() {
           const analyticsData = await analyticsResponse.json()
           setAnalytics(analyticsData.data)
         }
+
+        // Check user's subscription plan
+        try {
+          const subscriptionResponse = await fetch(`/api/subscriptions?organizationId=${selectedOrg}`)
+          if (subscriptionResponse.ok) {
+            const subscriptionData = await subscriptionResponse.json()
+            if (subscriptionData.data && subscriptionData.data.length > 0) {
+              const activeSubscription = subscriptionData.data.find((sub: any) => sub.status === 'active')
+              if (activeSubscription) {
+                // Determine plan from Stripe price ID
+                const planId = activeSubscription.stripePriceId?.includes('starter') ? 'starter' :
+                             activeSubscription.stripePriceId?.includes('professional') ? 'professional' :
+                             activeSubscription.stripePriceId?.includes('enterprise') ? 'enterprise' : 'free'
+                setUserPlan(planId)
+              } else {
+                setUserPlan('free') // No active subscription
+              }
+            } else {
+              setUserPlan('free') // No subscriptions
+            }
+          } else {
+            setUserPlan('free') // API error or no subscription
+          }
+        } catch {
+          console.log('No subscription found, user is on free plan')
+          setUserPlan('free')
+        }
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error)
     } finally {
       setIsLoading(false)
+    }
+  }, [selectedOrg])
+
+  useEffect(() => {
+    if (status === 'loading') return
+
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin')
+      return
+    }
+
+    // Check for success parameters from subscription purchase
+    const urlParams = new URLSearchParams(window.location.search)
+    const success = urlParams.get('success')
+    const testMode = urlParams.get('test_mode')
+    const plan = urlParams.get('plan')
+
+    if (success === 'true' && testMode === 'true' && plan) {
+      // Handle test mode subscription creation
+      handleTestModeSubscription(plan)
+    }
+
+    loadDashboardData()
+  }, [status, selectedOrg, loadDashboardData, router])
+
+  const handleTestModeSubscription = async (planId: string) => {
+    try {
+      const response = await fetch('/api/subscriptions/test-mode', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planId,
+          organizationId: selectedOrg || organizations[0]?.id
+        }),
+      })
+
+      if (response.ok) {
+        // Show success message
+        alert(`🎉 Successfully activated ${planId} plan! Your subscription is now active.`)
+        // Reload dashboard data to reflect the new subscription
+        loadDashboardData()
+        // Clean up URL parameters
+        window.history.replaceState({}, document.title, window.location.pathname)
+      } else {
+        const error = await response.json()
+        console.error('Failed to create test subscription:', error)
+      }
+    } catch (error) {
+      console.error('Error creating test subscription:', error)
     }
   }
 
@@ -95,26 +190,37 @@ export default function Dashboard() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--gradient-dark)' }}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading your dashboard...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="main-container">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+      <header className="nav-container">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">R</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-semibold text-white">Dashboard</h1>
+                <p className="text-sm text-gray-400">Welcome back, {session?.user?.name || 'User'}!</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
+            
+            <div className="flex items-center space-x-3">
+              {/* Organization Selector */}
               <select
                 value={selectedOrg}
                 onChange={(e) => setSelectedOrg(e.target.value)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="input text-sm"
               >
                 {organizations.map((org) => (
                   <option key={org.id} value={org.id}>
@@ -122,214 +228,369 @@ export default function Dashboard() {
                   </option>
                 ))}
               </select>
+
+              {/* Notifications - Premium Feature */}
+              {selectedOrg && <NotificationSystem organizationId={selectedOrg} />}
+
+              {/* Quick Action Buttons */}
               <button
-                onClick={() => router.push('/products/new')}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={() => router.push('/pricing-optimizer')}
+                className="btn btn-secondary"
               >
-                Add Product
+                ⚡ CSV Optimizer
               </button>
-              <div className="relative">
-                              <button
-                onClick={() => router.push('/billing')}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <svg className="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                Billing
-              </button>
+              
               <button
-                onClick={() => router.push('/premium-features')}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                onClick={() => {
+                  // Check plan limits
+                  const limit = getProductLimit(userPlan)
+                  if (products.length >= limit) {
+                    const planName = userPlan.charAt(0).toUpperCase() + userPlan.slice(1)
+                    alert(`${planName} plan is limited to ${limit === Infinity ? 'unlimited' : limit} products. ${limit !== Infinity ? 'Upgrade to add more products.' : 'You have reached your current limit.'}`)
+                    if (limit !== Infinity) {
+                      router.push('/pricing')
+                    }
+                    return
+                  }
+                  router.push('/products/new')
+                }}
+                className={`btn ${
+                  products.length >= getProductLimit(userPlan)
+                    ? 'btn-gray cursor-not-allowed' 
+                    : 'btn-primary'
+                }`}
+                disabled={products.length >= getProductLimit(userPlan)}
               >
-                <svg className="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Premium Features
+                ➕ Add Product{getProductLimitDisplay()}
               </button>
-              <button
-                onClick={() => router.push('/profile')}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <svg className="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Profile
-              </button>
+
+              {/* Profile Menu */}
+              <div className="flex items-center space-x-2">
+                {/* Plan Badge */}
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  userPlan === 'enterprise' ? 'bg-purple-600 text-white' :
+                  userPlan === 'professional' ? 'bg-blue-600 text-white' :
+                  userPlan === 'starter' ? 'bg-green-600 text-white' :
+                  'bg-gray-600 text-white'
+                }`}>
+                  {userPlan === 'free' ? 'Free Plan' : 
+                   userPlan.charAt(0).toUpperCase() + userPlan.slice(1) + ' Plan'}
+                </div>
+                
+                <button
+                  onClick={() => router.push('/billing')}
+                  className="btn btn-ghost btn-sm"
+                >
+                  💳 Billing
+                </button>
+                <button
+                  onClick={() => router.push('/profile')}
+                  className="btn btn-ghost btn-sm"
+                >
+                  👤 Profile
+                </button>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Analytics Cards */}
-        {analytics && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Total Products</dt>
-                      <dd className="text-lg font-medium text-gray-900">{analytics.totalProducts}</dd>
-                    </dl>
-                  </div>
+      <div className="container mx-auto py-8 px-4">
+        {/* Welcome Banner */}
+        <div className="mb-8">
+          <div className="card bg-blue-600 text-white p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-2 text-white">Welcome to RevSnap! 🚀</h2>
+                <p className="text-blue-100 mb-4 text-sm">
+                  Track competitors, optimize pricing, and increase your profit margins by 15-40%
+                </p>
+                <div className="flex items-center space-x-3">
+                  <Link 
+                    href="/pricing"
+                    className="btn btn-primary bg-white text-blue-600 hover:bg-gray-100 btn-sm"
+                  >
+                    Upgrade Plan
+                  </Link>
+                  <Link 
+                    href="/pricing"
+                    className="btn btn-ghost border-white text-white hover:bg-white hover:text-blue-600 btn-sm"
+                  >
+                    View Pricing
+                  </Link>
+                </div>
+              </div>
+              <div className="hidden md:block">
+                <div className="w-20 h-20 bg-white/10 rounded-lg flex items-center justify-center">
+                  <span className="text-3xl">📊</span>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Active Tracking</dt>
-                      <dd className="text-lg font-medium text-gray-900">{analytics.activeTrackingJobs}</dd>
-                    </dl>
-                  </div>
+        {/* Analytics Cards - Clean Empty State */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+          <div className="stats-card">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-center shadow-lg">
+                  <span className="text-lg">📦</span>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Unread Alerts</dt>
-                      <dd className="text-lg font-medium text-gray-900">{analytics.unreadAlerts}</dd>
-                    </dl>
-                  </div>
-                </div>
+              <div className="ml-3 w-0 flex-1">
+                <dt className="text-sm font-medium text-gray-400 truncate">Total Products</dt>
+                <dd className="text-lg font-semibold text-white">{products.length}</dd>
               </div>
             </div>
+          </div>
 
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <svg className="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Avg Price Change</dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        {analytics.averagePriceChange > 0 ? '+' : ''}{analytics.averagePriceChange.toFixed(2)}%
-                      </dd>
-                    </dl>
-                  </div>
+          <div className="stats-card">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-green-600 to-green-700 flex items-center justify-center shadow-lg">
+                  <span className="text-lg">▶️</span>
                 </div>
+              </div>
+              <div className="ml-3 w-0 flex-1">
+                <dt className="text-sm font-medium text-gray-400 truncate">Active Tracking</dt>
+                <dd className="text-lg font-semibold text-white">{products.filter(p => p.isActive).length}</dd>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-yellow-600 to-yellow-700 flex items-center justify-center shadow-lg">
+                  <span className="text-lg">⚠️</span>
+                </div>
+              </div>
+              <div className="ml-3 w-0 flex-1">
+                <dt className="text-sm font-medium text-gray-400 truncate">Price Alerts</dt>
+                <dd className="text-lg font-semibold text-white">
+                  {products.reduce((acc, p) => acc + p.priceAlerts.length, 0)}
+                </dd>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats-card">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-center shadow-lg">
+                  <span className="text-lg">📈</span>
+                </div>
+              </div>
+              <div className="ml-3 w-0 flex-1">
+                <dt className="text-sm font-medium text-gray-400 truncate">Monitored Sites</dt>
+                <dd className="text-lg font-semibold text-white">
+                  {products.reduce((acc, p) => acc + p.competitorData.length, 0)}
+                </dd>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ROI Dashboard */}
+        <div className="mb-8">
+          <ROIDashboard />
+        </div>
+
+        {/* Workflow Habits */}
+        <div className="mb-8">
+          <WorkflowHabits />
+        </div>
+
+        {/* Integrations Row - Only for paid plans */}
+        <StarterFeatureGate organizationId={selectedOrg}>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <ShopifyIntegration />
+            <ZapierIntegration />
+          </div>
+        </StarterFeatureGate>
+
+        {/* Enterprise Features Dashboard - Only for Enterprise subscribers */}
+        <EnterpriseFeatureGate organizationId={selectedOrg}>
+          <div className="mb-8">
+            <EnterpriseFeaturesDashboard />
+          </div>
+        </EnterpriseFeatureGate>
+
+        {/* Free Plan - Strong Upgrade Prompt */}
+        {userPlan === 'free' && (
+          <div className="mb-8">
+            <div className="bg-gradient-to-r from-red-900/50 to-orange-900/50 rounded-2xl p-8 border border-red-700/50 backdrop-blur-sm">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-red-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl">
+                  <span className="text-2xl">🔒</span>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Premium Features Locked
+                </h3>
+                <p className="text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed">
+                  <strong>To access competitor tracking, AI insights, and analytics, you need a paid plan.</strong> Free accounts can only add up to 2 products for evaluation purposes.
+                </p>
+                <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4 mb-6">
+                  <h4 className="text-white font-semibold mb-2">🚫 What's restricted on the free plan:</h4>
+                  <ul className="text-gray-300 text-left space-y-1">
+                    <li>• Real-time competitor price tracking</li>
+                    <li>• AI-powered pricing recommendations</li>
+                    <li>• Advanced analytics dashboard</li>
+                    <li>• Bulk product uploads</li>
+                    <li>• API access and integrations</li>
+                  </ul>
+                </div>
+                <div className="flex gap-4 justify-center">
+                  <button
+                    onClick={() => router.push('/pricing')}
+                    className="btn-primary text-lg py-3 px-8"
+                  >
+                    🔓 Unlock Features - Starting $49/mo
+                  </button>
+                  <button
+                    onClick={() => router.push('/demo')}
+                    className="btn-secondary text-lg py-3 px-8"
+                  >
+                    📊 View Demo
+                  </button>
+                </div>
+                <p className="text-sm text-gray-400 mt-4">
+                  No setup fees • Cancel anytime • Dedicated support
+                </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Products Grid */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Products</h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Track competitor prices and get real-time alerts
-            </p>
+        {/* Products Section */}
+        <div className="card">
+          <div className="px-6 py-4 border-b border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Your Products</h3>
+                <p className="text-sm text-gray-400 mt-1">
+                  Track competitor prices and get real-time alerts
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  // Check plan limits
+                  const limit = getProductLimit(userPlan)
+                  if (products.length >= limit) {
+                    const planName = userPlan.charAt(0).toUpperCase() + userPlan.slice(1)
+                    alert(`${planName} plan is limited to ${limit === Infinity ? 'unlimited' : limit} products. ${limit !== Infinity ? 'Upgrade to add more products.' : 'You have reached your current limit.'}`)
+                    if (limit !== Infinity) {
+                      router.push('/pricing')
+                    }
+                    return
+                  }
+                  router.push('/products/new')
+                }}
+                className={`btn btn-sm ${
+                  products.length >= getProductLimit(userPlan)
+                    ? 'btn-gray cursor-not-allowed' 
+                    : 'btn-primary'
+                }`}
+                disabled={products.length >= getProductLimit(userPlan)}
+              >
+                ➕ Add Product{getProductLimitDisplay()}
+              </button>
+            </div>
           </div>
-          <ul className="divide-y divide-gray-200">
-            {products.map((product) => {
-              const latestPrice = getLatestPrice(product)
-              return (
-                <li key={product.id}>
-                  <div className="px-4 py-4 sm:px-6">
+          
+          {products.length > 0 ? (
+            <div className="divide-y divide-gray-700">
+              {products.map((product) => {
+                const latestPrice = getLatestPrice(product)
+                return (
+                  <div key={product.id} className="p-6 hover:bg-gray-800 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                            </svg>
+                          <div className="h-10 w-10 rounded-lg bg-blue-900 flex items-center justify-center border border-blue-800">
+                            <span className="text-lg">📦</span>
                           </div>
                         </div>
                         <div className="ml-4">
                           <div className="flex items-center">
-                            <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                            <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              product.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                            <p className="font-medium text-white">{product.name}</p>
+                            <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                              product.isActive 
+                                ? 'badge-success' 
+                                : 'badge-neutral'
                             }`}>
-                              {product.isActive ? 'Active' : 'Inactive'}
+                              {product.isActive ? '✅ Active' : '⏸️ Inactive'}
                             </span>
                           </div>
                           {product.description && (
-                            <p className="text-sm text-gray-500">{product.description}</p>
+                            <p className="text-sm text-gray-400 mt-1">{product.description}</p>
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4">
+                      
+                      <div className="flex items-center space-x-6">
                         <div className="text-right">
                           {product.yourPrice && (
-                            <p className="text-sm font-medium text-gray-900">
-                              Your Price: {formatCurrency(product.yourPrice, product.currency)}
-                            </p>
+                            <>
+                              <div className="text-xs text-gray-400">Your Price</div>
+                              <div className="font-medium text-white">
+                                {formatCurrency(product.yourPrice, product.currency)}
+                              </div>
+                            </>
                           )}
                           {latestPrice && (
-                            <p className="text-sm text-gray-500">
+                            <div className="text-xs text-gray-400 mt-1">
                               Latest: {formatCurrency(latestPrice.currentPrice, latestPrice.currency)}
-                            </p>
+                            </div>
                           )}
                         </div>
+                        
                         <div className="flex items-center space-x-2">
                           <Link
                             href={`/products/${product.id}`}
-                            className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
+                            className="btn btn-ghost btn-sm"
                           >
-                            View
+                            👁️ View
                           </Link>
                           <Link
                             href={`/products/${product.id}/tracking`}
-                            className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200"
+                            className="btn btn-secondary btn-sm"
                           >
-                            Track
+                            ▶️ Track
                           </Link>
                         </div>
                       </div>
                     </div>
                   </div>
-                </li>
-              )
-            })}
-            {products.length === 0 && (
-              <li className="px-4 py-8 text-center">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-900">No products</h3>
-                <p className="mt-1 text-sm text-gray-500">Get started by adding your first product.</p>
-                <div className="mt-6">
-                  <button
-                    onClick={() => router.push('/products/new')}
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Add Product
-                  </button>
-                </div>
-              </li>
-            )}
-          </ul>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="px-6 py-12 text-center">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700">
+                <span className="text-3xl">📦</span>
+              </div>
+              <h3 className="text-lg font-medium text-white mb-2">No products yet</h3>
+              <p className="text-gray-400 mb-6 max-w-sm mx-auto text-sm">
+                Get started by adding your first product to begin tracking competitor prices and optimizing your pricing strategy.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => router.push('/products/new')}
+                  className="btn btn-primary"
+                >
+                  ➕ Add Your First Product
+                </button>
+                <button
+                  onClick={() => router.push('/pricing-optimizer')}
+                  className="btn btn-secondary"
+                >
+                  ⚡ Try CSV Optimizer
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/reset-password
+Disallow: /offline
+Disallow: /_not-found
+
+# Host
+Host: https://revsnap.com
+
+# Sitemaps
+Sitemap: https://revsnap.com/sitemap.xml

@@ -156,26 +156,40 @@ export default function PremiumFeaturesDashboard() {
 
   const exportData = async (dataType: string, format: string) => {
     try {
-      const response = await fetch('/api/enhanced-api', {
+      setLoading(true)
+      const response = await fetch('/api/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'export_data',
-          organizationId: selectedOrg,
           dataType,
-          format
+          format,
+          organizationId: selectedOrg,
+          includeMetadata: true
         })
       })
-      const data = await response.json()
-      if (data.success) {
-        // In a real implementation, you'd download the file
-        alert(`Data exported successfully as ${data.exportResult.filename}`)
+      
+      const result = await response.json()
+      
+      if (response.ok && result.success) {
+        // Show success message with download link
+        const downloadLink = document.createElement('a')
+        downloadLink.href = result.data.downloadUrl
+        downloadLink.download = result.data.filename
+        document.body.appendChild(downloadLink)
+        downloadLink.click()
+        document.body.removeChild(downloadLink)
+        
+        alert(`✅ Export successful!\nFile: ${result.data.filename}\nRecords: ${result.data.recordCount}\nRemaining exports: ${result.data.remainingExports}`)
+      } else if (result.upgradeRequired) {
+        alert(`❌ ${result.error}\n\nThis feature requires ${result.minimumPlan || 'a premium'} plan or higher.`)
       } else {
-        alert(data.error || 'Failed to export data')
+        alert(`❌ Export failed: ${result.error}`)
       }
     } catch (error) {
       console.error('Error exporting data:', error)
-      alert('Failed to export data')
+      alert('❌ Failed to export data. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 

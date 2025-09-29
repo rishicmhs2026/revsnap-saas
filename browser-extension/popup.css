@@ -1,0 +1,319 @@
+/* RevSnap Browser Extension Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 320px;
+  min-height: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.popup-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+}
+
+.header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.subtitle {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* Authentication */
+.auth-state {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.auth-state.hidden {
+  display: none;
+}
+
+.auth-state p {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  margin-right: 8px;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 8px 16px;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.btn-text {
+  background: none;
+  color: #2563eb;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.btn-text:hover {
+  background: #eff6ff;
+}
+
+/* Quick Actions */
+.quick-actions {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.action-btn:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.action-icon {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.action-text {
+  flex: 1;
+}
+
+.action-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.action-desc {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Product Info */
+.product-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 16px;
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+}
+
+#product-title {
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+  margin-right: 8px;
+  line-height: 1.3;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #059669;
+}
+
+.product-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* Price Analysis */
+.price-analysis {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.analysis-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 12px;
+}
+
+.label {
+  color: #6b7280;
+}
+
+.value {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+/* Recommendations */
+.recommendations {
+  margin: 0 16px 16px;
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.rec-header {
+  font-size: 12px;
+  font-weight: 500;
+  color: #92400e;
+  margin-bottom: 8px;
+}
+
+#rec-content {
+  font-size: 11px;
+  color: #78350f;
+  line-height: 1.4;
+}
+
+/* Loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading p {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Error */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+#error-message {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Hidden utility */
+.hidden {
+  display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 320px) {
+  body {
+    width: 280px;
+  }
+  
+  .popup-container {
+    font-size: 12px;
+  }
+} 

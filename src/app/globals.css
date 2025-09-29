@@ -1,68 +1,310 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Dark Theme Color Palette - Forbes Inspired */
 :root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
+  /* Dark backgrounds */
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #0a0a0a;
+  --color-bg-tertiary: #1a1a1a;
+  --color-bg-card: #111111;
+  --color-bg-elevated: #1e1e1e;
+  
+  /* Gradients */
+  --gradient-dark: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2a2a2a 100%);
+  --gradient-subtle: linear-gradient(135deg, #111111 0%, #1e1e1e 100%);
+  
+  /* Text colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e5e5e5;
+  --color-text-tertiary: #a1a1a1;
+  --color-text-muted: #6b7280;
+  
+  /* Accent colors - Enterprise Purple + Gold */
+  --color-purple-500: #a855f7;
+  --color-purple-600: #9333ea;
+  --color-purple-700: #7c3aed;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+  --color-gold-700: #b45309;
+  --color-green-500: #10b981;
+  --color-green-600: #059669;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-red-500: #ef4444;
+  
+  /* Borders */
+  --color-border: #2a2a2a;
+  --color-border-light: #3a3a3a;
+  
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.6), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  
+  /* Transitions */
+  --transition: all 0.15s ease-in-out;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ffffff;
-  }
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Force black background and Inter font everywhere */
+#__next, [data-nextjs-scroll-focus-boundary] {
+  background: #000000 !important;
+}
+
+.container, section, div {
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #000000 !important;
+  background-color: #000000 !important;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), ui-sans, system-ui, sans-serif;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #ffffff !important;
+  background: #000000 !important;
+  background-color: #000000 !important;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Force Playfair Display on headings */
-.font-playfair {
-  font-family: 'Playfair Display', Georgia, serif !important;
-}
-
-/* Force serif font on all serif elements */
-.font-serif {
-  font-family: 'Playfair Display', Georgia, serif !important;
-}
-
-/* Ensure headings use serif font */
+/* Modern Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', Georgia, serif !important;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5em;
 }
 
-/* Custom scrollbar for dark theme */
+h1 {
+  font-size: var(--font-size-5xl);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+p {
+  color: var(--color-text-secondary);
+  margin-bottom: 1em;
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+}
+
+/* Button Components */
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: 0.025em;
+}
+
+.btn-primary {
+  @apply bg-purple-600 text-white border border-purple-600;
+  background: linear-gradient(135deg, var(--color-purple-600) 0%, var(--color-gold-500) 100%);
+}
+
+.btn-primary:hover {
+  @apply bg-purple-700;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  @apply bg-transparent text-gray-300 border border-gray-600;
+}
+
+.btn-secondary:hover {
+  @apply bg-gray-800 text-white border-gray-500;
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  @apply bg-transparent text-gray-400 border-0;
+}
+
+.btn-ghost:hover {
+  @apply bg-gray-800 text-white;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base;
+}
+
+/* Card Components */
+.card {
+  @apply bg-gray-900 border border-gray-800 rounded-xl shadow-sm;
+  background: var(--gradient-subtle);
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  @apply border-gray-700;
+  box-shadow: var(--shadow-md);
+}
+
+.card-bordered {
+  @apply border border-gray-700;
+}
+
+/* Input Components */
+.input {
+  @apply w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.input:focus {
+  background: var(--color-bg-elevated);
+}
+
+/* Icon Sizes */
+.icon-xs { @apply h-3 w-3; }
+.icon-sm { @apply h-4 w-4; }
+.icon-md { @apply h-5 w-5; }
+.icon-lg { @apply h-6 w-6; }
+.icon-xl { @apply h-8 w-8; }
+
+/* Status Indicators */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+  @apply bg-green-900 text-green-300 border border-green-800;
+}
+
+.badge-warning {
+  @apply bg-yellow-900 text-yellow-300 border border-yellow-800;
+}
+
+.badge-error {
+  @apply bg-red-900 text-red-300 border border-red-800;
+}
+
+.badge-neutral {
+  @apply bg-gray-800 text-gray-300 border border-gray-700;
+}
+
+.badge-info {
+  @apply bg-blue-900 text-blue-300 border border-blue-800;
+}
+
+/* Layout Utilities */
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section {
+  @apply py-16;
+}
+
+.section-sm {
+  @apply py-8;
+}
+
+/* Navigation */
+.nav-link {
+  @apply text-gray-300 hover:text-white transition-colors duration-200 font-medium;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.nav-link-active {
+  @apply text-white;
+}
+
+/* Dividers */
+.divider {
+  @apply border-t border-gray-800;
+}
+
+/* Loading States */
+.loading {
+  @apply animate-spin rounded-full border-2 border-gray-700 border-t-blue-500;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--color-bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #404040;
-  border-radius: 4px;
+  background: var(--color-border);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #606060;
+  background: var(--color-border-light);
 }
 
-/* Apple-style spotlight effect */
-.spotlight {
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
-  filter: blur(80px);
-  opacity: 0.7;
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
 }
 
-.cinematic-glow {
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
-  filter: blur(100px);
-  opacity: 0.5;
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
 }

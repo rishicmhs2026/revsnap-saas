@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ChartBarIcon, CurrencyDollarIcon, ArrowTrendingUpIcon, ShieldCheckIcon, CheckIcon, StarIcon, UsersIcon, ArrowUpIcon } from '@heroicons/react/24/outline'
+// import { ChartBarIcon, CurrencyDollarIcon, ArrowTrendingUpIcon, ShieldCheckIcon, CheckIcon, StarIcon, UsersIcon, ArrowUpIcon } from '@heroicons/react/24/outline' // Unused imports
 
 export default function LearnMore() {
   return (
@@ -323,8 +323,8 @@ export default function LearnMore() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/demo" className="bg-white text-gray-900 font-semibold rounded-full px-8 py-4 text-lg hover:bg-gray-100 transition-all duration-300 tracking-wide">
-                Start Free Trial
+              <Link href="/pricing" className="bg-white text-gray-900 font-semibold rounded-full px-8 py-4 text-lg hover:bg-gray-100 transition-all duration-300 tracking-wide">
+                Get Started
               </Link>
               <Link href="/" className="border-2 border-white text-white font-semibold rounded-full px-8 py-4 text-lg hover:bg-white hover:text-gray-900 transition-all duration-300 tracking-wide">
                 Back to Home

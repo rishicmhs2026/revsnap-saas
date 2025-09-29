@@ -77,6 +77,43 @@ async function handleSubscriptionCreated(subscription: any) {
 
     if (!organizationId || !planId || !userId) {
       console.error('Missing metadata in subscription:', subscription.id)
+      console.error('Available metadata:', subscription.metadata)
+      
+      // Try to find organization by customer ID as fallback
+      const customerId = subscription.customer as string
+      const organization = await prisma.organization.findFirst({
+        where: { stripeCustomerId: customerId }
+      })
+      
+      if (organization) {
+        // Create subscription with available data
+        await prisma.subscription.upsert({
+          where: {
+            stripeSubscriptionId: subscription.id
+          },
+          update: {
+            status: subscription.status,
+            currentPeriodStart: new Date(subscription.current_period_start * 1000),
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            cancelAtPeriodEnd: subscription.cancel_at_period_end,
+            updatedAt: new Date()
+          },
+          create: {
+            organizationId: organization.id,
+            userId: organization.userId,
+            stripeCustomerId: customerId,
+            stripeSubscriptionId: subscription.id,
+            stripePriceId: subscription.items.data[0].price.id,
+            status: subscription.status,
+            currentPeriodStart: new Date(subscription.current_period_start * 1000),
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            cancelAtPeriodEnd: subscription.cancel_at_period_end
+          }
+        })
+        console.log(`Subscription created with fallback method: ${subscription.id}`)
+      } else {
+        console.error('Could not find organization for customer:', customerId)
+      }
       return
     }
 
@@ -104,6 +141,23 @@ async function handleSubscriptionCreated(subscription: any) {
         cancelAtPeriodEnd: subscription.cancel_at_period_end
       }
     })
+
+    // Log admin activity for subscription creation
+    await prisma.adminActivity.create({
+      data: {
+        type: 'subscription_change',
+        description: `Stripe subscription created: ${subscription.id}`,
+        metadata: JSON.stringify({
+          subscriptionId: subscription.id,
+          organizationId,
+          planId,
+          status: subscription.status
+        }),
+        severity: 'info',
+        userId,
+        organizationId
+      }
+    }).catch((err: any) => console.error('Failed to log admin activity:', err))
 
     console.log(`Subscription created: ${subscription.id}`)
   } catch (error) {
@@ -153,6 +207,7 @@ async function handleSubscriptionDeleted(subscription: any) {
 async function handlePaymentSucceeded(invoice: any) {
   try {
     if (invoice.subscription) {
+      // Update subscription status to active
       await prisma.subscription.updateMany({
         where: {
           stripeSubscriptionId: invoice.subscription as string
@@ -162,6 +217,31 @@ async function handlePaymentSucceeded(invoice: any) {
           updatedAt: new Date()
         }
       })
+
+      // Log successful payment
+      const subscription = await prisma.subscription.findFirst({
+        where: {
+          stripeSubscriptionId: invoice.subscription as string
+        }
+      })
+
+      if (subscription) {
+        await prisma.adminActivity.create({
+          data: {
+            type: 'subscription_change',
+            description: `Payment succeeded for subscription: ${invoice.subscription}`,
+            metadata: JSON.stringify({
+              invoiceId: invoice.id,
+              subscriptionId: invoice.subscription,
+              amount: invoice.amount_paid,
+              currency: invoice.currency
+            }),
+            severity: 'info',
+            userId: subscription.userId,
+            organizationId: subscription.organizationId
+          }
+        }).catch((err: any) => console.error('Failed to log payment activity:', err))
+      }
     }
 
     console.log(`Payment succeeded for invoice: ${invoice.id}`)

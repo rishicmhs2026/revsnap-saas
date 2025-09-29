@@ -1,0 +1,54 @@
+import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  
+  // Performance monitoring
+  tracesSampleRate: parseFloat(process.env.PERFORMANCE_SAMPLE_RATE || "0.1"),
+  
+  // Session replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+  
+  // Environment
+  environment: process.env.NODE_ENV || "development",
+  
+  // Release tracking
+  release: process.env.VERCEL_GIT_COMMIT_SHA || "development",
+  
+  // Debug mode
+  debug: process.env.NODE_ENV === "development",
+  
+  // Before send hook to filter out certain errors
+  beforeSend(event, hint) {
+    // Don't send errors in development
+    if (process.env.NODE_ENV === "development") {
+      return null;
+    }
+    
+    // Filter out certain error types
+    const error = hint.originalException;
+    if (error instanceof Error) {
+      // Don't send network errors
+      if (error.message.includes("Network Error")) {
+        return null;
+      }
+      
+      // Don't send 404 errors
+      if (error.message.includes("404")) {
+        return null;
+      }
+    }
+    
+    return event;
+  },
+  
+  // Integrations
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+  ],
+  
+  // Set sampling rate for profiling - this is relative to tracesSampleRate
+  profilesSampleRate: 1.0,
+}); 

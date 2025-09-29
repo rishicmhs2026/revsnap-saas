@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -15,7 +15,7 @@ const COMPETITORS = [
 ]
 
 export default function NewProduct() {
-  const { data: session, status } = useSession()
+  const { status } = useSession() // session removed as unused
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -36,26 +36,26 @@ export default function NewProduct() {
   })
 
   // Load organizations on component mount
-  useState(() => {
+  useEffect(() => {
+    const loadOrganizations = async () => {
+      try {
+        const response = await fetch('/api/organizations')
+        if (response.ok) {
+          const data = await response.json()
+          setOrganizations(data.data)
+          if (data.data.length > 0) {
+            setSelectedOrg(data.data[0].id)
+          }
+        }
+      } catch (error) {
+        console.error('Error loading organizations:', error)
+      }
+    }
+
     if (status === 'authenticated') {
       loadOrganizations()
     }
-  })
-
-  const loadOrganizations = async () => {
-    try {
-      const response = await fetch('/api/organizations')
-      if (response.ok) {
-        const data = await response.json()
-        setOrganizations(data.data)
-        if (data.data.length > 0) {
-          setSelectedOrg(data.data[0].id)
-        }
-      }
-    } catch (error) {
-      console.error('Error loading organizations:', error)
-    }
-  }
+  }, [status])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target

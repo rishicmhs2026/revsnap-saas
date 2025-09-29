@@ -1,0 +1,16 @@
+Product,Price,Category,Units Sold
+Widget A,10.99,Electronics,150
+Widget B,15.99,Electronics,200
+Widget C,25.99,Electronics,100
+Gadget X,45.99,Electronics,75
+Gadget Y,35.99,Electronics,120
+Tool 1,12.99,Hardware,80
+Tool 2,18.99,Hardware,90
+Tool 3,22.99,Hardware,110
+Accessory A,8.99,Electronics,300
+Accessory B,14.99,Electronics,250
+Component X,6.99,Electronics,400
+Component Y,9.99,Electronics,350
+Part A,4.99,Hardware,500
+Part B,7.99,Hardware,450
+Part C,11.99,Hardware,200

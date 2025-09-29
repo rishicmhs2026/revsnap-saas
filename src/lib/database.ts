@@ -2,6 +2,17 @@ import { prisma } from './prisma'
 import { CompetitorData, PriceAlert } from './competitor-tracking'
 
 export class DatabaseService {
+  // Check if database is available
+  private async isDatabaseAvailable(): Promise<boolean> {
+    try {
+      if (!prisma) return false
+      await prisma.$connect()
+      return true
+    } catch (error) {
+      console.warn('Database not available:', error)
+      return false
+    }
+  }
   // User operations
   async createUser(data: {
     email: string

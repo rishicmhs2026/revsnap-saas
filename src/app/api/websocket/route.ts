@@ -1,15 +1,58 @@
-import { NextRequest } from 'next/server'
-import { realtimeTrackingService } from '@/lib/realtime-tracking'
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { getWebSocketServer } from '@/lib/websocket-server'
+import { realTimeDataService } from '@/lib/realtime-data-service'
 
-export async function GET(request: NextRequest) {
-  // This is a placeholder for WebSocket upgrade
-  // In a real implementation, you'd handle WebSocket upgrade here
-  return new Response('WebSocket endpoint - use Socket.IO client', {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/plain',
-    },
-  })
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Authentication required for WebSocket connection' },
+        { status: 401 }
+      )
+    }
+
+    const wsServer = getWebSocketServer()
+    
+    if (!wsServer) {
+      return NextResponse.json(
+        { 
+          error: 'WebSocket server not initialized',
+          message: 'Real-time features are currently unavailable'
+        },
+        { status: 503 }
+      )
+    }
+
+    // Return connection information for client
+    return NextResponse.json({
+      success: true,
+      message: 'WebSocket server is running',
+      endpoint: '/api/websocket',
+      features: {
+        priceAlerts: 'Real-time price change notifications',
+        competitorUpdates: 'Live competitor data updates',
+        analyticsUpdates: 'Real-time dashboard metrics (Professional+)',
+        liveTracking: 'Live product tracking (Enterprise only)'
+      },
+      connectionInfo: {
+        path: '/api/websocket',
+        transports: ['websocket', 'polling'],
+        upgrade: true,
+        rememberUpgrade: true
+      }
+    })
+
+  } catch (error) {
+    console.error('WebSocket API error:', error)
+    return NextResponse.json(
+      { error: 'WebSocket service error' },
+      { status: 500 }
+    )
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -19,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'start-tracking':
-        const jobId = await realtimeTrackingService.startTracking(
+        const jobId = await realTimeDataService.startRealTimeTracking(
           productId,
           competitors,
           interval || 15,
@@ -29,13 +72,13 @@ export async function POST(request: NextRequest) {
 
       case 'stop-tracking':
         const { jobId: stopJobId } = body
-        const stopped = realtimeTrackingService.stopTracking(stopJobId)
+        const stopped = realTimeDataService.stopTracking(stopJobId)
         return Response.json({ success: stopped })
 
       case 'get-status':
-        const activeJobs = realtimeTrackingService.getActiveJobs()
+        const activeJobs = realTimeDataService.getActiveJobs()
         const jobForProduct = activeJobs.find(job => job.productId === productId)
-        const stats = realtimeTrackingService.getTrackingStats()
+        const stats = realTimeDataService.getTrackingStats()
         return Response.json({
           success: true,
           isTracking: !!jobForProduct,

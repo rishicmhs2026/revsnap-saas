@@ -58,6 +58,20 @@ model User {
   apiKeys       ApiKey[]
   organizationMembers OrganizationMember[]
   passwordResetTokens PasswordResetToken[]
+  
+  // Marketing & Sales Tools Relations
+  emailCampaigns EmailCampaign[]
+  crmContacts   CRMContact[]
+  crmDeals      CRMDeal[]
+  crmActivities CRMActivity[]
+  abTests       ABTest[]
+  seoData       SEOData[]
+  marketingIntegrations MarketingIntegration[]
+  
+  // Enterprise Features Relations
+  adminActivities AdminActivity[]
+  dataExports     DataExport[]
+  automationRuns  AutomationRun[]
 }
 
 model VerificationToken {
@@ -97,6 +111,21 @@ model Organization {
   products    Product[]
   members     OrganizationMember[]
   subscriptions Subscription[]
+  
+  // Marketing & Sales Tools Relations
+  emailCampaigns EmailCampaign[]
+  crmContacts   CRMContact[]
+  crmDeals      CRMDeal[]
+  crmActivities CRMActivity[]
+  abTests       ABTest[]
+  seoData       SEOData[]
+  marketingIntegrations MarketingIntegration[]
+  
+  // Enterprise Features Relations
+  adminActivities AdminActivity[]
+  dataExports     DataExport[]
+  automationRuns  AutomationRun[]
+  analyticsEvents AnalyticsEvent[]
 }
 
 model OrganizationMember {
@@ -136,6 +165,7 @@ model Product {
   competitorData CompetitorData[]
   priceAlerts    PriceAlert[]
   trackingJobs   TrackingJob[]
+  priceOptimizations PriceOptimization[]
 }
 
 model CompetitorData {
@@ -153,7 +183,7 @@ model CompetitorData {
   rating        Float?
   reviewCount   Int?
   url           String
-  metadata      Json?    // Additional competitor-specific data
+  metadata      String?  // Additional competitor-specific data (JSON string)
 
   productId     String
   product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -183,15 +213,16 @@ model PriceAlert {
 }
 
 model TrackingJob {
-  id              String   @id @default(cuid())
-  productId       String
-  competitors     String // JSON string of competitor names
-  intervalMinutes Int      @default(15)
-  isActive        Boolean  @default(true)
-  lastRun         DateTime?
-  nextRun         DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String   @id @default(cuid())
+  productId        String
+  competitors      String   // JSON string of competitor names
+  intervalMinutes  Int      @default(15)
+  isActive         Boolean  @default(true)
+  lastRun          DateTime?
+  nextRun          DateTime?
+  responseTimeMs   Int?     // Response time for last run
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
@@ -244,11 +275,315 @@ model WebhookDelivery {
   id        String   @id @default(cuid())
   webhookId String
   event     String
-  payload   Json
-  response  Json?
+  payload   String  // JSON string
+  response  String? // JSON string
   status    Int?
   duration  Int? // milliseconds
   createdAt DateTime @default(now())
 
   webhook   Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+}
+
+// Marketing & Sales Tools Models
+
+model EmailCampaign {
+  id          String   @id @default(cuid())
+  name        String
+  subject     String
+  content     String
+  template    String?
+  status      String   @default("draft") // draft, scheduled, sent, paused
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recipients  EmailRecipient[]
+  metrics     EmailMetrics[]
+}
+
+model EmailRecipient {
+  id        String   @id @default(cuid())
+  email     String
+  firstName String?
+  lastName  String?
+  status    String   @default("subscribed") // subscribed, unsubscribed, bounced
+  tags      String?  // JSON string of tags
+  metadata  String?  // Additional recipient data (JSON string)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  campaignId String
+  campaign   EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  events     EmailEvent[]
+}
+
+model EmailEvent {
+  id         String   @id @default(cuid())
+  type       String   // sent, opened, clicked, bounced, unsubscribed
+  timestamp  DateTime @default(now())
+  metadata   String?  // Additional event data (JSON string)
+  userAgent  String?
+  ipAddress  String?
+
+  recipientId String
+  recipient   EmailRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+}
+
+model EmailMetrics {
+  id           String   @id @default(cuid())
+  campaignId   String
+  sent         Int      @default(0)
+  delivered    Int      @default(0)
+  opened       Int      @default(0)
+  clicked      Int      @default(0)
+  bounced      Int      @default(0)
+  unsubscribed Int      @default(0)
+  date         DateTime @default(now())
+
+  campaign     EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model CRMContact {
+  id          String   @id @default(cuid())
+  firstName   String?
+  lastName    String?
+  email       String
+  phone       String?
+  company     String?
+  position    String?
+  source      String?  // website, email, phone, referral
+  status      String   @default("lead") // lead, prospect, customer, inactive
+  tags        String?  // JSON string of tags
+  notes       String?
+  metadata    String?  // Additional contact data (JSON string)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deals       CRMDeal[]
+  activities  CRMActivity[]
+}
+
+model CRMDeal {
+  id          String   @id @default(cuid())
+  title       String
+  value       Float?
+  currency    String   @default("USD")
+  stage       String   @default("prospecting") // prospecting, qualification, proposal, negotiation, closed_won, closed_lost
+  probability Int      @default(0) // 0-100
+  expectedCloseDate DateTime?
+  closedAt    DateTime?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contactId   String
+  contact     CRMContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  activities  CRMActivity[]
+}
+
+model CRMActivity {
+  id          String   @id @default(cuid())
+  type        String   // call, email, meeting, note, task
+  subject     String?
+  description String?
+  dueDate     DateTime?
+  completedAt DateTime?
+  status      String   @default("pending") // pending, completed, cancelled
+  priority    String   @default("medium") // low, medium, high
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contactId   String?
+  contact     CRMContact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  dealId      String?
+  deal        CRMDeal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  eventName   String
+  eventData   String?  // JSON string
+  userId      String?
+  sessionId   String?
+  pageUrl     String?
+  referrer    String?
+  userAgent   String?
+  ipAddress   String?
+  timestamp   DateTime @default(now())
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+}
+
+model ABTest {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  status      String   @default("draft") // draft, running, paused, completed
+  startDate   DateTime?
+  endDate     DateTime?
+  variants    String   // Array of test variants (JSON string)
+  trafficSplit String  // Traffic distribution (JSON string)
+  goals       String   // Conversion goals (JSON string)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  results     ABTestResult[]
+}
+
+model ABTestResult {
+  id          String   @id @default(cuid())
+  variant     String
+  impressions Int      @default(0)
+  conversions Int      @default(0)
+  conversionRate Float @default(0)
+  revenue     Float    @default(0)
+  date        DateTime @default(now())
+
+  testId      String
+  test        ABTest   @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
+
+model SEOData {
+  id          String   @id @default(cuid())
+  pageUrl     String
+  title       String?
+  description String?
+  keywords    String?
+  h1Tags      String?
+  h2Tags      String?
+  h3Tags      String?
+  imageAlt    String?
+  canonicalUrl String?
+  metaRobots  String?
+  structuredData String?  // JSON string
+  score       Int?     // SEO score 0-100
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model MarketingIntegration {
+  id          String   @id @default(cuid())
+  provider    String   // sendgrid, mailchimp, hubspot, salesforce, etc.
+  type        String   // email, crm, analytics, seo
+  credentials String   // Encrypted API credentials (JSON string)
+  settings    String?  // Integration-specific settings (JSON string)
+  isActive    Boolean  @default(true)
+  lastSync    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AdminActivity {
+  id             String        @id @default(cuid())
+  type           String        // 'user_login', 'user_register', 'subscription_change', etc.
+  description    String
+  metadata       String?       // JSON string for additional data
+  severity       String        @default("info") // 'info', 'warning', 'critical'
+  ipAddress      String?
+  userAgent      String?
+  userId         String?
+  organizationId String?
+  createdAt      DateTime      @default(now())
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+}
+
+model DataExport {
+  id               String   @id @default(cuid())
+  userId           String
+  organizationId   String?
+  dataType         String   // 'products', 'competitor_data', 'analytics', etc.
+  format           String   // 'csv', 'json', 'excel'
+  filename         String
+  filePath         String
+  recordCount      Int      @default(0)
+  status           String   @default("pending") // 'pending', 'completed', 'failed'
+  downloadCount    Int      @default(0)
+  lastDownloadedAt DateTime?
+  metadata         String?  // JSON string for export parameters
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model PriceOptimization {
+  id             String   @id @default(cuid())
+  productId      String
+  oldPrice       Float
+  newPrice       Float
+  revenueImpact  Float    @default(0)
+  confidence     Float    @default(0)
+  reasoning      String?
+  implementedAt  DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model AutomationRun {
+  id               String   @id @default(cuid())
+  userId           String
+  organizationId   String?
+  type             String   // 'price_update', 'alert_check', 'data_sync', etc.
+  status           String   // 'running', 'completed', 'failed'
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+  duration         Int?     // Duration in milliseconds
+  recordsProcessed Int      @default(0)
+  errorMessage     String?
+  metadata         String?  // JSON string for run details
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 } 

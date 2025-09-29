@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+// import puppeteer from 'puppeteer'
 import { CompetitorData, PriceAlert } from './competitor-tracking'
 
 export interface ScrapingConfig {
@@ -26,7 +26,8 @@ export interface ScrapingResult {
 }
 
 export class RealCompetitorTracker {
-  private browser: puppeteer.Browser | null = null
+  // private browser: puppeteer.Browser | null = null
+  private browser: any = null
   private rateLimitMap: Map<string, number[]> = new Map()
   private session: any
 
@@ -168,20 +169,20 @@ export class RealCompetitorTracker {
 
   // Initialize browser
   private async initBrowser(): Promise<void> {
-    if (!this.browser) {
-      this.browser = await puppeteer.launch({
-        headless: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--no-first-run',
-          '--no-zygote',
-          '--disable-gpu'
-        ]
-      })
-    }
+    // if (!this.browser) {
+    //   this.browser = await puppeteer.launch({
+    //     headless: true,
+    //     args: [
+    //       '--no-sandbox',
+    //       '--disable-setuid-sandbox',
+    //       '--disable-dev-shm-usage',
+    //       '--disable-accelerated-2d-canvas',
+    //       '--no-first-run',
+    //       '--no-zygote',
+    //       '--disable-gpu'
+    //     ]
+    //   })
+    // }
   }
 
   // Check rate limit
@@ -209,12 +210,12 @@ export class RealCompetitorTracker {
   }
 
   // Extract text from element
-  private async extractText(page: puppeteer.Page, selectors: string[]): Promise<string> {
+  private async extractText(page: any, selectors: string[]): Promise<string> {
     for (const selector of selectors) {
       try {
         const element = await page.$(selector)
         if (element) {
-          const text = await page.evaluate(el => el.textContent?.trim(), element)
+          const text = await page.evaluate((el: any) => el.textContent?.trim(), element)
           if (text) return text
         }
       } catch (error) {

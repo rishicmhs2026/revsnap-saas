@@ -5,8 +5,9 @@ import { databaseService } from '@/lib/database'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
@@ -17,7 +18,7 @@ export async function GET(
       )
     }
 
-    const product = await databaseService.getProductById(params.id)
+    const product = await databaseService.getProductById(id)
 
     if (!product) {
       return NextResponse.json(
@@ -42,8 +43,9 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
@@ -69,7 +71,7 @@ export async function PUT(
     } = body
 
     // Get the product first to check ownership
-    const existingProduct = await databaseService.getProductById(params.id)
+    const existingProduct = await databaseService.getProductById(id)
     
     if (!existingProduct) {
       return NextResponse.json(
@@ -88,7 +90,7 @@ export async function PUT(
     // Update the product using Prisma directly
     const { prisma } = await import('@/lib/prisma')
     const updatedProduct = await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         description,
@@ -126,8 +128,9 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     
@@ -139,7 +142,7 @@ export async function DELETE(
     }
 
     // Get the product first to check ownership
-    const existingProduct = await databaseService.getProductById(params.id)
+    const existingProduct = await databaseService.getProductById(id)
     
     if (!existingProduct) {
       return NextResponse.json(
@@ -158,7 +161,7 @@ export async function DELETE(
     // Delete the product using Prisma directly
     const { prisma } = await import('@/lib/prisma')
     await prisma.product.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({

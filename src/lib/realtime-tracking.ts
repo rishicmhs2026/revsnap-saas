@@ -1,5 +1,5 @@
 import { competitorTracker, CompetitorData, PriceAlert } from './competitor-tracking'
-import { wsServer } from './websocket-server'
+import { broadcastPriceUpdate, broadcastPriceAlert, broadcastMarketAnalysis, broadcastTrackingStatus } from './websocket-server'
 
 interface TrackingJob {
   id: string
@@ -179,19 +179,19 @@ export class RealtimeTrackingService {
 
       // Broadcast updates via WebSocket
       for (const data of trackingData) {
-        wsServer.broadcastPriceUpdate(job.productId, data)
+        broadcastPriceUpdate(job.productId, data)
       }
 
       for (const alert of alerts) {
-        wsServer.broadcastPriceAlert(job.productId, alert)
+        broadcastPriceAlert(job.productId, alert)
       }
 
       if (marketAnalysis) {
-        wsServer.broadcastMarketAnalysis(job.productId, marketAnalysis)
+        broadcastMarketAnalysis(job.productId, marketAnalysis)
       }
 
       // Broadcast tracking status
-      wsServer.broadcastTrackingStatus(job.productId, 'active')
+      broadcastTrackingStatus(job.productId, 'active')
 
       const result: TrackingResult = {
         success: true,
@@ -212,7 +212,7 @@ export class RealtimeTrackingService {
       if (job.errorCount >= job.maxErrors) {
         console.error(`Stopping tracking job ${jobId} due to too many errors`)
         this.stopTracking(jobId)
-        wsServer.broadcastTrackingStatus(job.productId, 'error')
+        broadcastTrackingStatus(job.productId, 'error')
       }
 
       return {

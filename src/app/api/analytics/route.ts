@@ -5,6 +5,11 @@ import { databaseService } from '@/lib/database'
 
 export async function GET(request: NextRequest) {
   try {
+    // Skip database operations during build
+    if (process.env.VERCEL_ENV === 'preview' && !process.env.DATABASE_URL) {
+      return NextResponse.json({ message: 'Database not configured for build' }, { status: 503 })
+    }
+    
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {

@@ -1,0 +1,298 @@
+/* RevSnap Premium Dark Theme - Apple meets Forbes */
+
+/* Global Reset & Foundation */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #__next, [data-nextjs-scroll-focus-boundary] {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Force all text to be white */
+h1, h2, h3, h4, h5, h6, p, span, div, a {
+  color: #ffffff !important;
+}
+
+/* Subtle Background Pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 98px,
+      rgba(255, 255, 255, 0.03) 100px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 98px,
+      rgba(255, 255, 255, 0.03) 100px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content is above background */
+body > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Subtle accent animation */
+html::after {
+  content: '';
+  position: fixed;
+  top: 20%;
+  right: 10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.04) 0%, rgba(59, 130, 246, 0.02) 40%, rgba(59, 130, 246, 0.01) 60%, transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: pulseAccent 12s ease-in-out infinite;
+}
+
+@keyframes pulseAccent {
+  0%, 100% { 
+    transform: scale(1) translateY(0px);
+    opacity: 0.4;
+  }
+  50% { 
+    transform: scale(1.2) translateY(-10px);
+    opacity: 0.7;
+  }
+}
+
+/* Override any light backgrounds */
+.bg-white, .bg-gray-50, .bg-gray-100 {
+  background: rgba(9, 9, 11, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Cards and containers */
+.bg-gray-900, .bg-gray-800 {
+  background: rgba(9, 9, 11, 0.9) !important;
+  border: 1px solid rgba(39, 39, 42, 0.4) !important;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(20px) !important;
+  position: relative;
+}
+
+.bg-gray-900::before, .bg-gray-800::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.02) 1px, transparent 0);
+  background-size: 20px 20px;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Enhanced card hover effects */
+.bg-gray-900:hover, .bg-gray-800:hover {
+  background: rgba(24, 24, 27, 0.95) !important;
+  border-color: rgba(63, 63, 70, 0.6) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 8px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Buttons */
+.bg-blue-600 {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+  box-shadow: 
+    0 4px 14px rgba(37, 99, 235, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.bg-blue-600:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+  box-shadow: 
+    0 6px 20px rgba(29, 78, 216, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Premium text effects */
+h1, h2, h3 {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gradient text for special elements */
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Input fields */
+input, textarea, select {
+  background: rgba(9, 9, 11, 0.8) !important;
+  border: 1px solid rgba(39, 39, 42, 0.6) !important;
+  color: #ffffff !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Trust badges and highlights */
+.text-green-400 {
+  color: #4ade80 !important;
+}
+
+.text-blue-400 {
+  color: #60a5fa !important;
+}
+
+.text-purple-400 {
+  color: #c084fc !important;
+}
+
+/* Premium Navigation */
+nav, header {
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(39, 39, 42, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Navigation links */
+nav a, header a {
+  transition: all 0.2s ease !important;
+}
+
+nav a:hover, header a:hover {
+  color: #60a5fa !important;
+  text-shadow: 0 0 8px rgba(96, 165, 250, 0.3) !important;
+}
+
+/* Premium form styling */
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 
+    0 0 0 3px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  outline: none !important;
+}
+
+/* Section dividers */
+hr {
+  border-color: rgba(39, 39, 42, 0.3) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Premium Background Effects - Subtle Blend */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse 800px 600px at 20% 80%, rgba(120, 119, 198, 0.08) 0%, rgba(120, 119, 198, 0.04) 25%, rgba(120, 119, 198, 0.02) 50%, transparent 75%),
+    radial-gradient(ellipse 700px 500px at 80% 20%, rgba(255, 119, 198, 0.06) 0%, rgba(255, 119, 198, 0.03) 30%, rgba(255, 119, 198, 0.015) 55%, transparent 80%),
+    radial-gradient(ellipse 900px 700px at 40% 40%, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.025) 35%, rgba(59, 130, 246, 0.01) 60%, transparent 85%);
+  pointer-events: none;
+  z-index: 0;
+  animation: enhancedFloat 20s ease-in-out infinite;
+}
+
+@keyframes enhancedFloat {
+  0% { 
+    opacity: 0.7; 
+    transform: translateX(0px) translateY(0px) scale(1); 
+    filter: blur(0px);
+  }
+  25% { 
+    opacity: 0.85; 
+    transform: translateX(30px) translateY(-20px) scale(1.05); 
+    filter: blur(0.5px);
+  }
+  50% { 
+    opacity: 0.9; 
+    transform: translateX(-20px) translateY(25px) scale(0.95); 
+    filter: blur(1px);
+  }
+  75% { 
+    opacity: 0.8; 
+    transform: translateX(25px) translateY(-15px) scale(1.02); 
+    filter: blur(0.5px);
+  }
+  100% { 
+    opacity: 0.7; 
+    transform: translateX(0px) translateY(0px) scale(1); 
+    filter: blur(0px);
+  }
+}
+
+/* Subtle Animated Micro-pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0),
+    linear-gradient(45deg, transparent 30%, rgba(59, 130, 246, 0.008) 50%, transparent 70%),
+    linear-gradient(-45deg, transparent 35%, rgba(168, 85, 247, 0.006) 50%, transparent 65%);
+  background-size: 40px 40px, 300px 300px, 250px 250px;
+  pointer-events: none;
+  z-index: 1;
+  animation: patternShift 30s linear infinite;
+}
+
+@keyframes patternShift {
+  0% { 
+    background-position: 0px 0px, 0px 0px, 0px 0px;
+    opacity: 0.8;
+  }
+  25% { 
+    background-position: 15px 15px, 50px 50px, -25px 25px;
+    opacity: 1;
+  }
+  50% { 
+    background-position: 30px 0px, 100px 0px, -50px 0px;
+    opacity: 0.9;
+  }
+  75% { 
+    background-position: 15px -15px, 150px -50px, -25px -25px;
+    opacity: 1;
+  }
+  100% { 
+    background-position: 0px 0px, 200px 0px, 0px 0px;
+    opacity: 0.8;
+  }
+}

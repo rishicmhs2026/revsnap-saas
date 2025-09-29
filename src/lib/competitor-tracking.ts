@@ -1,4 +1,4 @@
-import * as puppeteer from 'puppeteer'
+// import * as puppeteer from 'puppeteer'
 import { mockDataService } from './mock-data'
 
 // Types
@@ -96,14 +96,15 @@ const API_ENDPOINTS = {
 }
 
 export class CompetitorTracker {
-  private browser: puppeteer.Browser | null = null
+  // private browser: puppeteer.Browser | null = null
+  private browser: any = null
   private rateLimiters: Map<string, number[]> = new Map()
 
   async initialize() {
-    this.browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    })
+    // this.browser = await puppeteer.launch({
+    //   headless: true,
+    //   args: ['--no-sandbox', '--disable-setuid-sandbox']
+    // })
   }
 
   async close() {

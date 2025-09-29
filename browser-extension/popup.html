@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RevSnap Price Intelligence</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <div class="header">
+      <img src="icons/icon32.png" alt="RevSnap" class="logo">
+      <h1>RevSnap</h1>
+      <span class="subtitle">Price Intelligence</span>
+    </div>
+
+    <!-- Authentication State -->
+    <div id="auth-section">
+      <div id="logged-out" class="auth-state">
+        <p>Connect to your RevSnap account for full features</p>
+        <button id="login-btn" class="btn btn-primary">Connect Account</button>
+        <button id="guest-mode" class="btn btn-secondary">Use Guest Mode</button>
+      </div>
+
+      <div id="logged-in" class="auth-state hidden">
+        <div class="user-info">
+          <span id="user-name">Loading...</span>
+          <button id="logout-btn" class="btn btn-text">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <button id="check-current" class="action-btn">
+        <div class="action-icon">🔍</div>
+        <div class="action-text">
+          <div class="action-title">Check Current Page</div>
+          <div class="action-desc">Analyze product pricing</div>
+        </div>
+      </button>
+
+      <button id="track-product" class="action-btn">
+        <div class="action-icon">📊</div>
+        <div class="action-text">
+          <div class="action-title">Track This Product</div>
+          <div class="action-desc">Add to monitoring</div>
+        </div>
+      </button>
+
+      <button id="compare-similar" class="action-btn">
+        <div class="action-icon">⚖️</div>
+        <div class="action-text">
+          <div class="action-title">Find Similar Products</div>
+          <div class="action-desc">Compare across sites</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- Current Product Info -->
+    <div id="product-info" class="hidden">
+      <div class="product-card">
+        <div class="product-header">
+          <span id="product-title">Product Name</span>
+          <span id="current-price" class="price">$0.00</span>
+        </div>
+        <div class="product-meta">
+          <span id="product-brand">Brand</span>
+          <span id="product-site">Site</span>
+        </div>
+      </div>
+
+      <!-- Price Analysis -->
+      <div class="price-analysis">
+        <div class="analysis-item">
+          <span class="label">Market Average:</span>
+          <span id="market-avg" class="value">$0.00</span>
+        </div>
+        <div class="analysis-item">
+          <span class="label">Best Price:</span>
+          <span id="best-price" class="value">$0.00</span>
+        </div>
+        <div class="analysis-item">
+          <span class="label">Your Position:</span>
+          <span id="price-position" class="value">--</span>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div id="recommendations" class="recommendations">
+        <div class="rec-header">💡 AI Recommendations</div>
+        <div id="rec-content">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Analyzing pricing data...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error hidden">
+      <div class="error-icon">⚠️</div>
+      <p id="error-message">Something went wrong</p>
+      <button id="retry-btn" class="btn btn-secondary">Try Again</button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <button id="open-dashboard" class="btn btn-text">Open Dashboard</button>
+      <button id="settings" class="btn btn-text">Settings</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html> 

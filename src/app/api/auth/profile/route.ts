@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { databaseService } from '@/lib/database'
 import bcrypt from 'bcryptjs'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions)
     
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Remove sensitive information
-    const { password, ...userProfile } = user
+    const { password: _, ...userProfile } = user
 
     return NextResponse.json({
       success: true,
@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest) {
     const updatedUser = await databaseService.updateUser(session.user.id, updateData)
 
     // Remove sensitive information
-    const { password, ...userProfile } = updatedUser
+    const { password: _, ...userProfile } = updatedUser
 
     return NextResponse.json({
       success: true,

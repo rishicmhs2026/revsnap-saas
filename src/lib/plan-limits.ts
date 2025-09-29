@@ -20,6 +20,30 @@ export interface PlanLimits {
 }
 
 export const PLAN_LIMITS: Record<string, PlanLimits> = {
+  free: {
+    name: 'Free',
+    price: 0,
+    maxProducts: 2,
+    updateIntervalMinutes: 1440, // 24 hours
+    competitorSources: ['Amazon', 'Best Buy'],
+    features: [
+      'Basic competitor tracking',
+      'Up to 2 products',
+      'Daily price updates',
+      'Basic analytics',
+      'Email support'
+    ],
+    supportLevel: 'email',
+    apiAccess: false,
+    customAlerts: false,
+    dataExport: false,
+    mobileDashboard: true,
+    teamCollaboration: false,
+    whiteLabel: false,
+    slaGuarantee: false,
+    customIntegrations: false,
+    customAIModels: false
+  },
   starter: {
     name: 'Starter',
     price: 49,
@@ -166,7 +190,7 @@ export class PlanService {
    */
   static validateAction(
     planId: string, 
-    action: 'add_product' | 'update_frequency' | 'api_access' | 'custom_alerts',
+    action: 'add_product' | 'update_frequency' | 'api_access' | 'custom_alerts' | 'advanced_tracking' | 'enterprise_analytics' | 'team_collaboration' | 'white_label' | 'custom_integrations' | 'custom_ai_models',
     currentCount?: number
   ): { allowed: boolean; reason?: string } {
     const plan = PLAN_LIMITS[planId]
@@ -200,6 +224,42 @@ export class PlanService {
         return { 
           allowed: plan.customAlerts, 
           reason: plan.customAlerts ? undefined : 'Custom alerts not available in this plan' 
+        }
+
+      case 'advanced_tracking':
+        return { 
+          allowed: planId !== 'free', 
+          reason: planId === 'free' ? 'Advanced tracking requires a paid plan' : undefined 
+        }
+
+      case 'enterprise_analytics':
+        return { 
+          allowed: planId === 'enterprise', 
+          reason: planId !== 'enterprise' ? 'Enterprise analytics requires Enterprise plan' : undefined 
+        }
+
+      case 'team_collaboration':
+        return { 
+          allowed: plan.teamCollaboration, 
+          reason: plan.teamCollaboration ? undefined : 'Team collaboration requires Professional plan or higher' 
+        }
+
+      case 'white_label':
+        return { 
+          allowed: plan.whiteLabel, 
+          reason: plan.whiteLabel ? undefined : 'White-label features require Enterprise plan' 
+        }
+
+      case 'custom_integrations':
+        return { 
+          allowed: plan.customIntegrations, 
+          reason: plan.customIntegrations ? undefined : 'Custom integrations require Enterprise plan' 
+        }
+
+      case 'custom_ai_models':
+        return { 
+          allowed: plan.customAIModels, 
+          reason: plan.customAIModels ? undefined : 'Custom AI models require Enterprise plan' 
         }
 
       default:
@@ -255,7 +315,7 @@ export class PlanService {
    * Get the next plan in the hierarchy
    */
   private static getNextPlan(currentPlanId: string): string {
-    const planOrder = ['starter', 'professional', 'enterprise']
+    const planOrder = ['free', 'starter', 'professional', 'enterprise']
     const currentIndex = planOrder.indexOf(currentPlanId)
     return planOrder[Math.min(currentIndex + 1, planOrder.length - 1)]
   }
@@ -263,6 +323,7 @@ export class PlanService {
 
 // Export plan constants for easy access
 export const PLAN_IDS = {
+  FREE: 'free',
   STARTER: 'starter',
   PROFESSIONAL: 'professional',
   ENTERPRISE: 'enterprise'

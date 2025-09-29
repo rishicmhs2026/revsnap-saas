@@ -18,7 +18,7 @@ interface Product {
 }
 
 export default function CompetitorTrackingPage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   
   const [products, setProducts] = useState<Product[]>([])
@@ -31,8 +31,8 @@ export default function CompetitorTrackingPage() {
   const [currentPrices, setCurrentPrices] = useState<CompetitorData[]>([])
   const [priceAlerts, setPriceAlerts] = useState<PriceAlert[]>([])
   const [marketInsights, setMarketInsights] = useState<AIInsight[]>([])
-  const [pricePredictions, setPricePredictions] = useState<PricePrediction[]>([])
-  const [marketTrends, setMarketTrends] = useState<MarketTrend[]>([])
+  const [, setPricePredictions] = useState<PricePrediction[]>([])
+  const [, setMarketTrends] = useState<MarketTrend[]>([])
   const [competitiveIntelligence, setCompetitiveIntelligence] = useState<any>(null)
   
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'error'>('disconnected')
@@ -60,7 +60,7 @@ export default function CompetitorTrackingPage() {
     }
 
     loadProducts()
-  }, [status])
+  }, [status, router])
 
   const loadProducts = async () => {
     try {
@@ -349,7 +349,7 @@ export default function CompetitorTrackingPage() {
                             ? 'text-red-600 bg-red-100'
                             : 'text-gray-600 bg-gray-100'
                         }`}>
-                          {price.priceChange ? formatPercentage(price.priceChangePercent || 0) : 'No change'}
+                          {price.priceChange ? formatPercentage(price.priceChange || 0) : 'No change'}
                         </span>
                       </div>
                       <div className="text-2xl font-bold text-gray-900">

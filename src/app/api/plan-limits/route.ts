@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const organizationId = searchParams.get('organizationId')
-    const action = searchParams.get('action') as 'add_product' | 'update_frequency' | 'api_access' | 'custom_alerts'
+    const action = searchParams.get('action') as 'add_product' | 'update_frequency' | 'api_access' | 'custom_alerts' | 'advanced_tracking' | 'enterprise_analytics' | 'team_collaboration' | 'white_label' | 'custom_integrations' | 'custom_ai_models'
 
     if (!organizationId) {
       return NextResponse.json({ error: 'Organization ID required' }, { status: 400 })

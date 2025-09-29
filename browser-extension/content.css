@@ -1,0 +1,224 @@
+/* RevSnap Browser Extension - Content Styles */
+
+.revsnap-price-indicator {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 10000;
+  pointer-events: auto;
+}
+
+.revsnap-badge {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.revsnap-badge:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.revsnap-icon {
+  font-size: 10px;
+}
+
+.revsnap-text {
+  white-space: nowrap;
+}
+
+.revsnap-analysis {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10001;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12px;
+  min-width: 280px;
+  animation: revsnap-slide-down 0.3s ease;
+}
+
+@keyframes revsnap-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.revsnap-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  justify-content: center;
+  padding: 8px;
+}
+
+.revsnap-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #2563eb;
+  border-radius: 50%;
+  animation: revsnap-spin 1s linear infinite;
+}
+
+@keyframes revsnap-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.revsnap-error {
+  color: #dc2626;
+  text-align: center;
+  padding: 8px;
+}
+
+.revsnap-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.revsnap-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.revsnap-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.revsnap-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.revsnap-value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.revsnap-value.competitive {
+  color: #059669;
+}
+
+.revsnap-value.above-market {
+  color: #dc2626;
+}
+
+.revsnap-actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.revsnap-btn {
+  flex: 1;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.revsnap-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.revsnap-btn.revsnap-track {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.revsnap-btn.revsnap-track:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .revsnap-analysis {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    right: auto;
+    width: 90vw;
+    max-width: 320px;
+  }
+  
+  .revsnap-price-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* Site-specific adjustments */
+
+/* Amazon */
+.a-price .revsnap-price-indicator {
+  top: -12px;
+  right: -12px;
+}
+
+/* Walmart */
+[data-testid="price-current"] .revsnap-price-indicator {
+  top: -10px;
+  right: -10px;
+}
+
+/* Target */
+[data-test="product-price"] .revsnap-price-indicator {
+  top: -8px;
+  right: -8px;
+}
+
+/* Shopify stores */
+.product-price .revsnap-price-indicator,
+.price .revsnap-price-indicator {
+  top: -6px;
+  right: -6px;
+}
+
+/* Ensure indicators don't interfere with site functionality */
+.revsnap-price-indicator {
+  pointer-events: auto !important;
+}
+
+.revsnap-analysis {
+  pointer-events: auto !important;
+} 

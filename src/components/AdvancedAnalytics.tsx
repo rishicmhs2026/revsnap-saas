@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { AIInsight, PricePrediction, MarketTrend, CompetitiveIntelligence } from '@/lib/ai-analytics'
+// import { AIInsight, PricePrediction, MarketTrend, CompetitiveIntelligence } from '@/lib/ai-analytics' // Unused imports
 import { RealTimeData } from '@/lib/realtime-data-service'
 
 interface AdvancedAnalyticsProps {
@@ -21,7 +21,7 @@ interface ChartData {
   }[]
 }
 
-export default function AdvancedAnalytics({ productId, yourPrice, competitors }: AdvancedAnalyticsProps) {
+export default function AdvancedAnalytics({ productId, yourPrice, competitors: _competitors }: AdvancedAnalyticsProps) { // Prefix with _ to indicate unused
   const [realTimeData, setRealTimeData] = useState<RealTimeData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -93,16 +93,14 @@ export default function AdvancedAnalytics({ productId, yourPrice, competitors }:
 
     const labels = realTimeData.currentPrices.map(p => p.competitor)
     const prices = realTimeData.currentPrices.map(p => p.currentPrice)
-    
-    const datasets = [
-      {
-        label: 'Current Prices',
-        data: prices,
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        tension: 0.4
-      }
-    ]
+
+    const datasets = [{
+      label: 'Competitor Prices',
+      data: prices,
+      borderColor: 'rgb(168, 85, 247)',
+      backgroundColor: 'rgba(168, 85, 247, 0.1)',
+      tension: 0.4
+    }]
 
     if (yourPrice) {
       datasets.push({
@@ -303,7 +301,7 @@ export default function AdvancedAnalytics({ productId, yourPrice, competitors }:
                     ? 'text-red-600 bg-red-100'
                     : 'text-gray-600 bg-gray-100'
                 }`}>
-                  {price.priceChange ? formatPercentage(price.priceChangePercent || 0) : 'No change'}
+                  {price.priceChange ? formatPercentage(price.priceChange || 0) : 'No change'}
                 </span>
               </div>
               <div className="text-2xl font-bold text-gray-900">
@@ -467,4 +465,4 @@ export default function AdvancedAnalytics({ productId, yourPrice, competitors }:
       )}
     </div>
   )
-} 
+}

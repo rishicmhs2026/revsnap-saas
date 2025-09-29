@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       // Get organization-wide data
       const products = await databaseService.getOrganizationProducts(organizationId!)
       const allData = await Promise.all(
-        products.map(async (product) => {
+        products.map(async (product: any) => {
           const realTimeData = realTimeDataService.getRealTimeData(product.id)
           return {
             productId: product.id,
@@ -153,20 +153,20 @@ export async function POST(request: NextRequest) {
     // Get previous prices for comparison
     const previousPrices = await databaseService.getLatestCompetitorData(productId)
     const previousPricesMap = new Map(
-      previousPrices.map(p => [p.competitor, p])
+      previousPrices.map((p: any) => [p.competitor, p])
     )
 
     // Calculate price changes
     const pricesWithChanges = currentPrices.map(current => {
       const previous = previousPricesMap.get(current.competitor)
-      const priceChange = previous ? current.currentPrice - previous.currentPrice : 0
-      const priceChangePercent = previous && previous.currentPrice > 0 
-        ? (priceChange / previous.currentPrice) * 100 
+      const priceChange = previous ? current.currentPrice - (previous as any).currentPrice : 0
+      const priceChangePercent = previous && (previous as any).currentPrice > 0 
+        ? (priceChange / (previous as any).currentPrice) * 100 
         : 0
 
       return {
         ...current,
-        previousPrice: previous?.currentPrice || 0,
+        previousPrice: (previous as any)?.currentPrice || 0,
         priceChange,
         priceChangePercent: Math.round(priceChangePercent * 100) / 100
       }
@@ -290,7 +290,7 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json({ success: true, stopped })
 
       case 'update_price':
-        const { newPrice } = data
+        // const { newPrice } = data // Unused variable
         // Update product price in database
         // This would typically update the product record
         return NextResponse.json({ success: true, priceUpdated: true })
@@ -324,7 +324,7 @@ async function generatePriceAlerts(
     )
     
     if (previous && Math.abs(current.priceChange || 0) > 0.01) {
-      const changePercent = current.priceChangePercent || 0
+      const changePercent = (current as any).priceChangePercent || 0
       
       let severity: 'high' | 'medium' | 'low' = 'low'
       if (Math.abs(changePercent) >= 10) {

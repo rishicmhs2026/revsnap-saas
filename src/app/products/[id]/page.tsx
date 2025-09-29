@@ -32,8 +32,17 @@ interface Analytics {
   averagePriceChange: number
 }
 
-export default function ProductDetail({ params }: { params: { id: string } }) {
-  const { data: session, status } = useSession()
+export default function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
+  const [productId, setProductId] = useState<string>('')
+  
+  useEffect(() => {
+    const resolveParams = async () => {
+      const resolvedParams = await params
+      setProductId(resolvedParams.id)
+    }
+    resolveParams()
+  }, [params])
+  const { status } = useSession() // session removed as unused
   const router = useRouter()
   const [product, setProduct] = useState<Product | null>(null)
   const [analytics, setAnalytics] = useState<Analytics | null>(null)
@@ -49,15 +58,17 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
       return
     }
 
-    loadProductData()
-  }, [status, params.id])
+    if (productId) {
+      loadProductData()
+    }
+  }, [status, productId])
 
   const loadProductData = async () => {
     try {
       setIsLoading(true)
 
       // Load product details
-      const productResponse = await fetch(`/api/products/${params.id}`)
+              const productResponse = await fetch(`/api/products/${productId}`)
       if (productResponse.ok) {
         const productData = await productResponse.json()
         setProduct(productData.data)
@@ -66,7 +77,7 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
       }
 
       // Load analytics
-      const analyticsResponse = await fetch(`/api/analytics?productId=${params.id}`)
+              const analyticsResponse = await fetch(`/api/analytics?productId=${productId}`)
       if (analyticsResponse.ok) {
         const analyticsData = await analyticsResponse.json()
         setAnalytics(analyticsData.data)
@@ -86,10 +97,10 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
     }).format(amount)
   }
 
-  const getLatestPrice = (competitorData: any[]) => {
-    if (competitorData.length === 0) return null
-    return competitorData[0]
-  }
+  // const getLatestPrice = (competitorData: any[]) => { // Unused function
+  //   if (competitorData.length === 0) return null
+  //   return competitorData[0]
+  // }
 
   const getPriceChangeColor = (change: number) => {
     if (change > 0) return 'text-red-600'

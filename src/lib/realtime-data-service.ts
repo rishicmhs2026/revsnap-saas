@@ -483,6 +483,47 @@ export class RealTimeDataService {
     return Array.from(this.activeTrackingJobs.keys())
   }
 
+  // Stop tracking for a specific job
+  stopTracking(jobId: string): boolean {
+    const job = this.activeTrackingJobs.get(jobId)
+    if (job) {
+      clearInterval(job)
+      this.activeTrackingJobs.delete(jobId)
+      return true
+    }
+    return false
+  }
+
+  // Get active jobs with details
+  getActiveJobs(): Array<{ jobId: string; productId: string; interval: number; startTime: Date }> {
+    const jobs: Array<{ jobId: string; productId: string; interval: number; startTime: Date }> = []
+    this.activeTrackingJobs.forEach((interval, jobId) => {
+      // Extract productId from jobId (assuming format: productId-timestamp)
+      const productId = jobId.split('-')[0]
+      jobs.push({
+        jobId,
+        productId,
+        interval: 15, // Default interval
+        startTime: new Date() // This would need to be stored properly in a real implementation
+      })
+    })
+    return jobs
+  }
+
+  // Get tracking statistics
+  getTrackingStats(): { activeJobs: number; totalDataPoints: number; averageResponseTime: number } {
+    const activeJobs = this.activeTrackingJobs.size
+    const totalDataPoints = this.realTimeData.size
+    const averageResponseTime = Array.from(this.dataSources.values())
+      .reduce((sum, source) => sum + source.responseTime, 0) / this.dataSources.size || 0
+    
+    return {
+      activeJobs,
+      totalDataPoints,
+      averageResponseTime
+    }
+  }
+
   // Start the service
   start(): void {
     if (!this.isRunning) {

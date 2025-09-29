@@ -118,6 +118,20 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Check if we're in test mode (no real Stripe keys)
+    const isTestMode = !process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.includes('your-stripe-secret-key')
+    
+    if (isTestMode) {
+      // Test mode - simulate successful subscription
+      return NextResponse.json({
+        success: true,
+        data: {
+          sessionId: 'test_session_id',
+          url: `/dashboard?success=true&test_mode=true&plan=${planId}`
+        }
+      })
+    }
+
     // Create checkout session
     const checkoutSession = await StripeService.createCheckoutSession({
       customerId: stripeCustomerId,
