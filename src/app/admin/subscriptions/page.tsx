@@ -52,7 +52,8 @@ export default function AdminSubscriptionsPage() {
     }
 
     // Check if user is admin
-    if (session?.user?.role !== 'admin' && session?.user?.role !== 'super_admin') {
+    const userRole = session?.user?.role
+    if (userRole !== 'admin' && userRole !== 'super_admin') {
       router.push('/dashboard')
       return
     }
