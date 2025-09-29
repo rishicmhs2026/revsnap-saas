@@ -134,11 +134,11 @@ export async function GET(request: NextRequest) {
     const retentionRate = totalUsers > 0 ? ((totalUsers - newUsers) / totalUsers) * 100 : 0
 
     // Calculate conversion metrics
-    const activeSubscriptions = conversionMetrics.filter(sub => sub.status === 'active').length
+    const activeSubscriptions = conversionMetrics.filter((sub: any) => sub.status === 'active').length
     const conversionRate = totalUsers > 0 ? (activeSubscriptions / totalUsers) * 100 : 0
 
     // Calculate plan distribution
-    const planDistribution = conversionMetrics.reduce((acc, sub) => {
+    const planDistribution = conversionMetrics.reduce((acc: Record<string, number>, sub: any) => {
       const plan = sub.stripePriceId?.includes('starter') ? 'starter' :
                    sub.stripePriceId?.includes('professional') ? 'professional' :
                    sub.stripePriceId?.includes('enterprise') ? 'enterprise' : 'free'
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
     }, {} as Record<string, number>)
 
     // Calculate daily active users
-    const dailyActiveUsers = userEngagement.reduce((acc, user) => {
+    const dailyActiveUsers = userEngagement.reduce((acc: Record<string, number>, user: any) => {
       const date = user.lastLoginAt?.toISOString().split('T')[0]
       if (date) {
         acc[date] = (acc[date] || 0) + 1
